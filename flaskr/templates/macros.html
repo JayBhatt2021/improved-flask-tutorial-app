@@ -1,0 +1,20 @@
+{% macro upvote_button(post_id, upvotes=0, is_upvoted_by_user=false) -%}
+    {% if is_upvoted_by_user %}
+        <button id="{{ post_id }}" onclick="pressUpvoteButton({{ post_id }})" style="background-color: lightgreen;">
+            <img src="../static/upvote.png" alt="upvote button">
+            <span class="button-text" id="span-{{ post_id }}">{{ upvotes }} Likes</span>
+        </button>
+    {% else %}
+        <button id="{{ post_id }}" onclick="pressUpvoteButton({{ post_id }})" style="background-color: white;">
+            <img src="../static/upvote.png" alt="upvote button">
+            <span class="button-text" id="span-{{ post_id }}">{{ upvotes }} Likes</span>
+        </button>
+    {% endif %}
+{%- endmacro %}
+
+{% macro disabled_upvote_button(post_id, upvotes=0) -%}
+    <button id="{{ post_id }}" onclick="pressUpvoteButton({{ post_id }})" disabled>
+        <img src="../static/upvote.png" alt="upvote button">
+        <span class="button-text" id="span-{{ post_id }}">{{ upvotes }} Likes</span>
+    </button>
+{%- endmacro %}
