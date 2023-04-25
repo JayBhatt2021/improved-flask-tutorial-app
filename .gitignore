@@ -1,15 +1,19 @@
-venv/
+# General
+.venv/
+instance/
+*.egg-info/
+dist/
+build/
+.env
 
+# Pycache
 *.pyc
 __pycache__/
 
-instance/
-
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
 
-dist/
-build/
-*.egg-info/
+# PyCharm
 .idea/
