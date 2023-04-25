@@ -1,27 +1,61 @@
-<!doctype html>
-<head>
-    <title>{% block title %}{% endblock %} - Flaskr</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script type="text/javascript" src="../static/script.js"></script>
-</head>
-<nav>
-    <h1>Flaskr</h1>
-    <ul>
-        {% if g.user %}
-            <li><span>{{ g.user['username'] }}</span>
-            <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-        {% else %}
-            <li><a href="{{ url_for('auth.register') }}">Register</a>
-            <li><a href="{{ url_for('auth.login') }}">Log In</a>
-        {% endif %}
-    </ul>
-</nav>
-<section class="content">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
-    {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-    {% endfor %}
-    {% block content %}{% endblock %}
-</section>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            {% block title %}
+            {% endblock title %}
+        - Flaskr</title>
+        <meta name="keywords" content="flask, upvote, blog"/>
+        <meta name="description"
+              content="This is a heavily-modified official Flask tutorial with upvoting functionality."/>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        {# Allows children templates to add CSS files to the head block #}
+        {% block css_section %}
+            <link href="{{ url_for('static', filename='img/index.css') }}"
+                  rel="stylesheet"
+                  media="screen, print"/>
+        {% endblock css_section %}
+    </head>
+    <body>
+        <nav>
+            <h1>Flaskr</h1>
+            <ul>
+                {% if g.user %}
+                    <li>
+                        <span>{{ g.user["username"] }}</span>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('auth.logout') }}">Log Out</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ url_for('auth.register') }}">Register</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('auth.login') }}">Log In</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <section class="content">
+            <header>
+                {% block header %}
+                {% endblock header %}
+            </header>
+            {% for message in get_flashed_messages() %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+            {% block content %}
+            {% endblock content %}
+        </section>
+        {# Allows children templates to add JS files to the end of the body block #}
+        {% block js_section %}
+            <script type="text/javascript"
+                    src="{{ url_for('static', filename='../static/js/index.js') }}"></script>
+            <script src="https://code.jquery.com/jquery-3.6.3.js"
+                    integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+                    crossorigin="anonymous"></script>
+        {% endblock js_section %}
+    </body>
+</html>
