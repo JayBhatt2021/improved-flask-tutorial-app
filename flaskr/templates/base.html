@@ -52,10 +52,9 @@
         {# Allows children templates to add JS files to the end of the body block #}
         {% block js_section %}
             <script type="text/javascript"
-                    src="{{ url_for('static', filename='../static/js/index.js') }}"></script>
-            <script src="https://code.jquery.com/jquery-3.6.3.js"
-                    integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-                    crossorigin="anonymous"></script>
+                    src="{{ url_for('static', filename='js/index.js') }}"></script>
+            <script type="text/javascript"
+                    src="{{ url_for('static', filename='vendor/jquery-3.6.4/jquery-3.6.4.min.js') }}"></script>
         {% endblock js_section %}
     </body>
 </html>
