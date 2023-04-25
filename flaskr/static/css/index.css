@@ -1,32 +1,32 @@
+/**
+ * index.css
+ *
+ * This file contains all of the CSS styles for this project.
+ */
+
+/**
+ * [element] Styles
+ */
 html {
-    font-family: sans-serif;
     background: #eee;
+    font-family: sans-serif;
     padding: 1rem;
 }
 
 body {
-    max-width: 1000px;
-    margin: 0 auto;
     background: white;
+    margin: 0 auto;
+    max-width: 1000px;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: serif;
     color: #377ba8;
+    font-family: serif;
     margin: 1rem 0;
 }
 
 a {
     color: #377ba8;
-}
-
-button {
-    border-color: lightgray;
-    height: 1.5rem;
-    margin: 1rem 0 0 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 hr {
@@ -37,21 +37,42 @@ hr {
 nav {
     background: lightgray;
     display: flex;
-    align-items: center;
     padding: 0 0.5rem;
+    align-items: center;
 }
 
+button {
+    border-color: lightgray;
+    display: flex;
+    justify-content: center;
+    height: 1.5rem;
+    margin: 1rem 0 0 0.5rem;
+    align-items: center;
+}
+
+input.danger {
+    color: #cc2f2e;
+}
+
+input[type=submit] {
+    min-width: 10em;
+    align-self: start;
+}
+
+/**
+ * [element element] Styles
+ */
 nav h1 {
     flex: auto;
     margin: 0;
 }
 
 nav h1 a {
-    text-decoration: none;
     padding: 0.25rem 0.5rem;
+    text-decoration: none;
 }
 
-nav ul  {
+nav ul {
     display: flex;
     list-style: none;
     margin: 0;
@@ -63,14 +84,35 @@ nav ul li a, nav ul li span, header .action {
     padding: 0.5rem;
 }
 
-.button-text {
-    margin-left: 0.5rem;
-}
-
+/**
+ * [.class] Styles
+ */
 .content {
     padding: 0 1rem 1rem;
 }
 
+.content:last-child {
+    margin-bottom: 0;
+}
+
+.flash {
+    background: #cae6f6;
+    border: 1px solid #377ba8;
+    margin: 1em 0;
+    padding: 1em;
+}
+
+.button-text {
+    margin-left: 0.5rem;
+}
+
+.post-first-line {
+    display: flex;
+}
+
+/**
+ * [.class > element] Styles
+ */
 .content > header {
     border-bottom: 1px solid lightgray;
     display: flex;
@@ -82,17 +124,10 @@ nav ul li a, nav ul li span, header .action {
     margin: 1rem 0 0.25rem 0;
 }
 
-.flash {
-    margin: 1em 0;
-    padding: 1em;
-    background: #cae6f6;
-    border: 1px solid #377ba8;
-}
-
 .post > header {
     display: flex;
-    align-items: flex-end;
     font-size: 0.85em;
+    align-items: flex-end;
 }
 
 .post > header > div:first-of-type {
@@ -104,6 +139,9 @@ nav ul li a, nav ul li span, header .action {
     margin-bottom: 0.25em;
 }
 
+/**
+ * [.class .class] Styles
+ */
 .post .about {
     color: slategray;
     font-style: italic;
@@ -113,24 +151,19 @@ nav ul li a, nav ul li span, header .action {
     white-space: pre-line;
 }
 
-.post-first-line {
-    display: flex;
-}
-
-.content:last-child {
-    margin-bottom: 0;
-}
-
+/**
+ * [.class element] Styles
+ */
 .content form {
-    margin: 1em 0.25em;
     display: flex;
     flex-direction: column;
+    margin: 1em 0.25em;
 }
 
 .content label {
     color: #377ba8;
-    letter-spacing: 0.03em;
     font-weight: bold;
+    letter-spacing: 0.03em;
     margin-bottom: 0.3em;
 }
 
@@ -141,13 +174,4 @@ nav ul li a, nav ul li span, header .action {
 .content textarea {
     min-height: 15em;
     resize: vertical;
-}
-
-input.danger {
-    color: #cc2f2e;
-}
-
-input[type=submit] {
-    align-self: start;
-    min-width: 10em;
 }
