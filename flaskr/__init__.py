@@ -42,8 +42,8 @@ def register_blueprints(app):
     :param app: The Flask app.
     """
 
-    # Imports the blueprint modules from the current package
-    from . import auth, blog
+    # Imports the blueprint modules from flaskr
+    from flaskr import auth, blog
 
     # Registers the blueprints from the above modules
     app.register_blueprint(auth.bp, url_prefix="/")
@@ -58,7 +58,7 @@ def prepare_database_and_login(app):
 
     # Imports all database models to ensure db.create_all() is going to be
     # called properly
-    from .models import Post, Upvote, User
+    from flaskr.models import Post, Upvote, User
 
     # Constructs the app context and database, respectively
     with app.app_context():
