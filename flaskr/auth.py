@@ -36,7 +36,7 @@ def register():
         elif username_exists:
             error = "This username already exists."
 
-        # Registers the new user and redirects him/her to the Login Page if
+        # Registers the new user and redirects him/her to the Login Template if
         # error is None
         if error is None:
             new_user = User(
