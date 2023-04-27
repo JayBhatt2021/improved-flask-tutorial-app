@@ -88,7 +88,7 @@ def login():
             login_user(user, remember=True)
             flash("You have been logged in!", category="success")
 
-            return redirect(url_for("index"))
+            return redirect(url_for("blog.index"))
 
         # Flashes an error message if error is not None
         flash(error, category="error")
@@ -109,4 +109,4 @@ def logout():
     logout_user()
     flash("You have been logged out!", category="success")
 
-    return redirect(url_for("index"))
+    return redirect(url_for("blog.index"))
