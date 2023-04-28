@@ -102,12 +102,20 @@ nav ul li a, nav ul li span, header .action {
     padding: 1em;
 }
 
-.button-text {
-    margin-left: 0.5rem;
-}
-
 .post-first-line {
     display: flex;
+}
+
+.selected-upvote-button {
+    background-color: lightgreen;
+}
+
+.unselected-upvote-button {
+    background-color: white;
+}
+
+.button-text {
+    margin-left: 0.5rem;
 }
 
 /**
