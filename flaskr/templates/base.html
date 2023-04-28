@@ -5,25 +5,25 @@
             {% block title %}
             {% endblock title %}
         - Flaskr</title>
-        <meta name="keywords" content="flask, upvote, blog"/>
+        <meta name="keywords" content="flask, upvote, blog" />
         <meta name="description"
-              content="This is a heavily-modified official Flask tutorial with upvoting functionality."/>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+              content="This is a heavily-modified official Flask tutorial with upvoting functionality." />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {# Allows children templates to add CSS files to the head block #}
         {% block css_section %}
             <link href="{{ url_for('static', filename='css/index.css') }}"
                   rel="stylesheet"
-                  media="screen, print"/>
+                  media="screen, print" />
         {% endblock css_section %}
     </head>
     <body>
         <nav>
             <h1>Flaskr</h1>
             <ul>
-                {% if g.user %}
+                {% if user.is_authenticated %}
                     <li>
-                        <span>{{ g.user["username"] }}</span>
+                        <span>{{ user.username }}</span>
                     </li>
                     <li>
                         <a href="{{ url_for('auth.logout') }}">Log Out</a>
