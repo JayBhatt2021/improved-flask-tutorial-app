@@ -7,22 +7,17 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def create_app(test_config=None):
+def create_app():
     """Creates and configures an instance of the Flask application.
 
-    :param test_config: The test config object.
     :return: The Flask app.
     """
 
     # Constructs the Flask app
     app = Flask(__name__, instance_relative_config=True)
 
-    if test_config is None:
-        # Loads the instance config object when not testing
-        app.config.from_object("config.ProductionConfig")
-    else:
-        # Loads the test config object if passed in
-        app.config.from_mapping(test_config)
+    # Loads the instance config object
+    app.config.from_object("config.ProductionConfig")
 
     # Initializes the Flask app with the SQLAlchemy object
     db.init_app(app)
