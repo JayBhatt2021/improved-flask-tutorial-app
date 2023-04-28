@@ -5,6 +5,7 @@
             Posts
         {% endblock title %}
     </h1>
+    {#  New Post Link  #}
     {% if user.is_authenticated %}<a class="action" href="{{ url_for('blog.create') }}">New</a>{% endif %}
 {% endblock header %}
 {% block content %}
@@ -14,6 +15,7 @@
                 <div>
                     <div class="post-first-line">
                         <h1>{{ post.title }}</h1>
+                        {#  Upvote Button  #}
                         {% if user.id in post.upvotes | map(attribute="upvoter_id") | list %}
                             <button class="selected-upvote-button"
                                     id="upvote-button-{{ post.id }}"
@@ -38,6 +40,7 @@
                     </div>
                     <div class="about">by {{ post.user.username }} on {{ post.date_created.strftime("%Y-%m-%d") }}</div>
                 </div>
+                {#  Edit Post Link  #}
                 {% if user.id == post.author_id %}
                     <a class="action" href="{{ url_for('blog.update', post_id=post.id) }}">Edit</a>
                 {% endif %}
