@@ -12,7 +12,7 @@ First, `git clone` this repository, and navigate to the `flask-tutorial` directo
 
 ```bash
 $ git clone https://github.com/JayBhatt2021/improved-flask-tutorial-app.git
-$ cd flask-tutorial
+$ cd improved-flask-tutorial-app
 ```
 
 If you use **macOS/Linux**, use the following commands to create your virtual environment folder and activate it,
