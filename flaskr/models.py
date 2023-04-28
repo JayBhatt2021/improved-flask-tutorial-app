@@ -24,7 +24,7 @@ class Post(db.Model):
     author_id = db.Column(
         db.Integer,
         db.ForeignKey("user.id", ondelete="CASCADE"),
-        nullable=False
+        nullable=False,
     )
     upvotes = db.relationship("Upvote", backref="post", passive_deletes=True)
 
@@ -36,10 +36,10 @@ class Upvote(db.Model):
     upvoter_id = db.Column(
         db.Integer,
         db.ForeignKey("user.id", ondelete="CASCADE"),
-        nullable=False
+        nullable=False,
     )
     upvoted_post_id = db.Column(
         db.Integer,
         db.ForeignKey("post.id", ondelete="CASCADE"),
-        nullable=False
+        nullable=False,
     )
