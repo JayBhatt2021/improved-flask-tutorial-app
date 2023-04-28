@@ -3,8 +3,8 @@
 Flaskr (sometimes referred to as the "Improved Flask Tutorial App" in the project) is an improved version of
 **The Pallet Projects**' [official Flask tutorial](https://github.com/pallets/flask/tree/2.2.4/examples/tutorial). In
 addition to its original features (registering/logging-in users, creating posts, etc.), this version of Flaskr also
-allows users to upvote (like) posts. However, the code in this repository differs greatly in certain areas as it heavily
-uses Flask-Login and Flask-SQLAlchemy.
+allows users to upvote (like) posts. However, the code in this repository differs greatly from the one in the official
+tutorial as it heavily uses Flask-Login and Flask-SQLAlchemy.
 
 ## Installation
 
