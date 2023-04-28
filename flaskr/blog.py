@@ -56,9 +56,7 @@ def create():
             flash(error, category="error")
         else:
             created_post = Post(
-                title=title,
-                body=body,
-                author_id=current_user.id
+                title=title, body=body, author_id=current_user.id
             )
             db.session.add(created_post)
             db.session.commit()
@@ -93,7 +91,7 @@ def update(post_id):
 
         # Assigns the appropriate message to error (if needed)
         if not title:
-            error = "Title is required."
+            error = "The title is required."
         elif not body:
             error = "The post cannot be empty."
 
@@ -164,8 +162,7 @@ def upvote(post_id):
     else:
         # Increments the upvote counter for the post by 1
         new_upvote = Upvote(
-            upvoter_id=current_user.id,
-            upvoted_post_id=post_id
+            upvoter_id=current_user.id, upvoted_post_id=post_id
         )
         db.session.add(new_upvote)
         db.session.commit()
