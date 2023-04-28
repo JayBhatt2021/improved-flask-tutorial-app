@@ -19,7 +19,7 @@ def create_app(test_config=None):
 
     if test_config is None:
         # Loads the instance config object when not testing
-        app.config.from_object("config.DevelopmentConfig")
+        app.config.from_object("config.ProductionConfig")
     else:
         # Loads the test config object if passed in
         app.config.from_mapping(test_config)
