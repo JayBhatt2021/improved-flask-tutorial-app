@@ -12,7 +12,7 @@ load_dotenv(path.join(project_root_dir, ".env"))
 
 
 class BaseConfig:
-    """Sets the default Flask configuration variables."""
+    """Sets the default and database Flask configuration variables."""
 
     # Default Configurations
     SECRET_KEY = environ.get("SECRET_KEY", "Default Secret Key")
