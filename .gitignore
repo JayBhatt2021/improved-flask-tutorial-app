@@ -2,18 +2,11 @@
 .venv/
 instance/
 *.egg-info/
-dist/
-build/
 .env
 
 # Pycache
 *.pyc
 __pycache__/
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
 
 # PyCharm
 .idea/
