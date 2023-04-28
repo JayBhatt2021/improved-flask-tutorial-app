@@ -1,0 +1,31 @@
+[project]
+name = "flaskr"
+version = "2.0.0"
+description = "A heavily-modified official Flask tutorial with upvoting functionality."
+readme = "README.md"
+keywords = ["flask", "upvote", "blog"]
+authors = [
+    { name = "Jay Bhatt", email = "jay.bhatt98@gmail.com" },
+]
+dependencies = [
+    "black",
+    "css-html-prettify",
+    "djlint",
+    "flake8",
+    "flask",
+    "flask-login",
+    "flask-sqlalchemy",
+    "isort",
+    "python-dotenv",
+    "waitress"
+]
+
+[project.urls]
+repository = "https://github.com/JayBhatt2021/improved-flask-tutorial-app"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 79
