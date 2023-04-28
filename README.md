@@ -8,7 +8,7 @@ tutorial as it heavily uses Flask-Login and Flask-SQLAlchemy.
 
 ## Installation
 
-First, `git clone` this repository, and navigate to the `flask-tutorial` directory.
+First, `git clone` this repository, and navigate to the `improved-flask-tutorial-app` directory.
 
 ```bash
 $ git clone https://github.com/JayBhatt2021/improved-flask-tutorial-app.git
