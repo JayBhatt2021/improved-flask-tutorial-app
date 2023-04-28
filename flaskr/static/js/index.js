@@ -5,30 +5,27 @@
  */
 
 /**
- * Prompts the user to confirm the deletion of a post
- */
-const confirmDelete = () => confirm("Are you sure?");
-
-/**
- * Makes the background color of the upvote button lightgreen or white
- * if it was selected or deselected by the user, respectively
+ * Handles the events associated with pressing the upvote button of a post
  *
- * @param  {String} buttonId The ID of the upvote button.
+ * @param  {String} postId The ID of the post.
  */
-const pressUpvoteButton = (buttonId) => {
-  const button = document.getElementById(buttonId);
-  button.style.backgroundColor = button.style.backgroundColor === "white"
-    ? "lightgreen"
-    : "white";
+function upvote(postId) {
+  // Obtains the upvote button and its count, respectively
+  const upvoteButton = document.getElementById(`upvote-button-${postId}`);
+  const upvoteCount = document.getElementById(`upvotes-count-${postId}`);
 
-  $.ajax({
-    type: "POST",
-    url: `/${buttonId}/upvote`,
-    data: {
-      post_id: buttonId,
-    },
-    success: function () {
-      alert("Reassignment Submitted.");
-    },
-  });
-};
+  fetch(`/upvote/${postId}`, { method: "POST" })
+    .then((res) => res.json())
+    .then((resData) => {
+      // Sets the upvote count
+      upvoteCount.innerHTML = `${resData["upvoteCount"]} Upvotes`;
+
+      // Sets the background color based on whether the user upvoted the post
+      if (resData["isUpvotedByCurrentUser"] === true) {
+        upvoteButton.style.backgroundColor = "lightgreen";
+      } else {
+        upvoteButton.style.backgroundColor = "white";
+      }
+    })
+    .catch((_) => alert("You must be signed in to upvote a post."));
+}
