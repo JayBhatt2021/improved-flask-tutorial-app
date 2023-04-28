@@ -19,7 +19,8 @@ def index():
     :return: The rendered HTML of the Index Template.
     """
 
-    posts = Post.query.all()
+    # Sorts the posts from most to least recent
+    posts = reversed(Post.query.all())
 
     return render_template("blog/index.html", user=current_user, posts=posts)
 
@@ -148,7 +149,7 @@ def upvote(post_id):
              whether the post has been upvoted by the user."""
 
     # Queries the database for the post by post_id
-    post = Post.query.filter_by(id=id).first()
+    post = Post.query.filter_by(id=post_id).first()
 
     # Queries the database for the upvote by upvoter_id and upvoted_post_id
     upvote = Upvote.query.filter_by(
