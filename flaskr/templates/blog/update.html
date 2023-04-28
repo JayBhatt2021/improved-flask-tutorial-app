@@ -2,7 +2,7 @@
 {% block header %}
     <h1>
         {% block title %}
-            Edit "{{ post['title'] }}"
+            Edit "{{ post.title }}"
         {% endblock title %}
     </h1>
 {% endblock header %}
@@ -11,15 +11,14 @@
         <label for="title">Title</label>
         <input name="title"
                id="title"
-               value="{{ request.form['title'] or post['title'] }}"
-               required/>
+               value="{{ request.form['title'] or post.title }}"
+               required />
         <label for="body">Body</label>
-        <textarea name="body" id="body">{{ request.form["body"] or post["body"] }}</textarea>
-        <input type="submit" value="Save"/>
+        <textarea name="body" id="body" required>{{ request.form["body"] or post.body }}</textarea>
+        <input type="submit" value="Save" />
     </form>
-    <hr/>
-    <form action="{{ url_for('blog.delete', post_id=post['id']) }}"
-          method="post">
-        <input class="danger" type="submit" value="Delete" onclick="confirmDelete()"/>
+    <hr />
+    <form action="{{ url_for('blog.delete', post_id=post.id) }}" method="post">
+        <input class="danger" type="submit" value="Delete" onclick="confirmDelete()" />
     </form>
 {% endblock content %}
