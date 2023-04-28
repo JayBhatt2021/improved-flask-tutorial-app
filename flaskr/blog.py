@@ -1,176 +1,174 @@
-from itertools import zip_longest
+"""Holds the blog blueprint."""
+from flask import (Blueprint, flash, jsonify, redirect, render_template,
+                   request, url_for)
+from flask_login import current_user, login_required
 
-import click
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
-)
-from werkzeug.exceptions import abort
+from flaskr import db
+from flaskr.models import Post, Upvote
 
-from flaskr.auth import login_required
-from flaskr.db import get_db
-
-# 'blog' corresponds to the Blueprint's name
-# '__name__' helps locate the root path of the Blueprint
-bp = Blueprint('blog', __name__)
+# The blueprint name is "blog".
+# The package that this blueprint is located in is "__name__".
+bp = Blueprint("blog", __name__)
 
 
-@bp.route('/')
+@bp.route("/")
+@bp.route("/index")
 def index():
-    """Show all the posts and their corresponding information, most recent first."""
-    db = get_db()
+    """Shows the Index Template with all posts.
 
-    posts = db.execute(
-        'SELECT p.id, title, body, created, p.author_id, username, cnt.post_id_sum'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
-        ' LEFT OUTER JOIN'
-        '  (SELECT post_id, COUNT(*) AS post_id_sum FROM upvote GROUP BY post_id) cnt'
-        '  ON p.id = cnt.post_id'
-        ' ORDER BY created DESC;'
-    ).fetchall()
-    upvoted_posts = get_upvoted_posts()
+    :return: The rendered HTML of the Index Template.
+    """
 
-    post_info = zip_longest(posts, upvoted_posts, fillvalue=0)
-    return render_template('blog/index.html', post_info=post_info)
+    posts = Post.query.all()
+
+    return render_template("blog/index.html", user=current_user, posts=posts)
 
 
-@bp.route('/create', methods=('GET', 'POST'))
+@bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
-    """Create a new post for the current user."""
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
+    """Creates a new post for the current user.
+
+    :return: The rendered HTML of the signed-in version of the Index Template
+             if all inputs are valid; otherwise, the rendered HTML of the
+             Create Template is returned.
+    """
+
+    if request.method == "POST":
+        # Gets the inputted title and body from the Create Template
+        title = request.form["title"]
+        body = request.form["body"]
+
+        # Initializes the error-checking variable
         error = None
 
+        # Assigns the appropriate message to error (if needed)
         if not title:
-            error = 'Title is required.'
+            error = "Title is required."
+        elif not body:
+            error = "The post cannot be empty."
 
+        # Creates a new post and redirects the user to the signed-in version of
+        # the Index Template if error is None; otherwise, an error message is
+        # flashed.
         if error is not None:
-            flash(error)
+            flash(error, category="error")
         else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO post (title, body, author_id)'
-                ' VALUES (?, ?, ?);',
-                (title, body, g.user['id'])
+            created_post = Post(
+                title=title,
+                body=body,
+                author_id=current_user.id
             )
-            db.commit()
-            return redirect(url_for('blog.index'))
+            db.session.add(created_post)
+            db.session.commit()
+            flash("Your post has been created!", category="success")
 
-    return render_template('blog/create.html')
+            return redirect(url_for("blog.index"))
 
-
-def get_post(post_id, check_author=True):
-    """Get a post and its author by id.
-
-    Checks that the id exists and optionally that the current user is
-    the author.
-
-    :param post_id: id of post to get
-    :param check_author: require the current user to be the author
-    :return: the post with author information
-    :raise 404: if a post with the given id doesn't exist
-    :raise 403: if the current user isn't the author"""
-    post = get_db().execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
-        ' WHERE p.id = ?;',
-        (post_id,)
-    ).fetchone()
-
-    if post is None:
-        abort(404, f"Post id {post_id} doesn't exist.")
-
-    if check_author and post['author_id'] != g.user['id']:
-        abort(403)
-
-    return post
+    return render_template("blog/create.html", user=current_user)
 
 
-def get_upvoted_posts():
-    """Gets a list of all posts that the current user has upvoted.
-
-    :return: list of all upvoted posts by the current user"""
-    db = get_db()
-    is_logged_in = hasattr(g.user, 'id')
-
-    upvoted_posts = [] if not is_logged_in else db.execute(
-        'SELECT p.id, EXISTS(SELECT upvoter_id, post_id'
-        '  FROM upvote u'
-        '  WHERE u.post_id = p.id AND u.upvoter_id = ?) AS is_upvoted'
-        ' FROM post p'
-        ' ORDER BY p.id DESC;',
-        (g.user['id'],)
-    ).fetchall()
-
-    u = db.execute(
-        'SELECT p.id, EXISTS(SELECT upvoter_id, post_id'
-        '  FROM upvote u'
-        '  WHERE u.post_id = p.id AND u.upvoter_id = ?) AS is_upvoted'
-        ' FROM post p'
-        ' ORDER BY p.id DESC;',
-        (g.user['id'],)
-    ).fetchall()
-    click.echo(u[1]['is_upvoted'])
-    return upvoted_posts
-
-
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
+@bp.route("/update/<int:post_id>", methods=("GET", "POST"))
 @login_required
 def update(post_id):
-    """Update a post if the current user is the author."""
-    post = get_post(post_id)
+    """Updates a post if the current user is the author.
 
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
+    :param post_id: The Post ID.
+    :return: The rendered HTML of the signed-in version of the Index Template
+             if all inputs are valid; otherwise, the rendered HTML of the
+             Update Template is returned.
+    """
+
+    # Queries the database for the post by post_id
+    post = Post.query.filter_by(id=post_id).first()
+
+    if request.method == "POST":
+        # Gets the inputted title and body from the Update Template
+        title = request.form["title"]
+        body = request.form["body"]
+
+        # Initializes the error-checking variable
         error = None
 
+        # Assigns the appropriate message to error (if needed)
         if not title:
-            error = 'Title is required.'
+            error = "Title is required."
+        elif not body:
+            error = "The post cannot be empty."
 
+        # Updates the post and redirects the user to the signed-in version of
+        # the Index Template if error is None; otherwise, an error message is
+        # flashed.
         if error is not None:
-            flash(error)
+            flash(error, category="error")
         else:
-            db = get_db()
-            db.execute(
-                'UPDATE post SET title = ?, body = ?'
-                ' WHERE id = ?;',
-                (title, body, post_id)
-            )
-            db.commit()
-            return redirect(url_for('blog.index'))
+            post.title = title
+            post.body = body
+            db.session.commit()
+            flash("Your post has been updated!", category="success")
 
-    return render_template('blog/update.html', post=post)
+            return redirect(url_for("blog.index"))
+
+    return render_template("blog/update.html", user=current_user, post=post)
 
 
-@bp.route('/<int:id>/delete', methods=('POST',))
+@bp.route("/delete/<int:post_id>", methods=("POST",))
 @login_required
 def delete(post_id):
-    """Delete a post.
+    """Deletes a post after ensuring that the post exists and the logged-in
+    user is the author of the post.
 
-    Ensures that the post exists and that the logged-in user is the
-    author of the post."""
-    get_post(post_id)
-    db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?;', (post_id,))
-    db.execute('DELETE FROM upvote WHERE post_id = ?;', (post_id,))
-    db.commit()
-    return redirect(url_for('blog.index'))
+    :param post_id: The Post ID.
+    :return: The rendered HTML of the signed-in version of the Index Template.
+    """
+
+    # Queries the database for the post by post_id
+    post = Post.query.filter_by(id=post_id).first()
+
+    # Deletes the post and redirects the user to the signed-in version of the
+    # Index Template
+    db.session.delete(post)
+    db.session.commit()
+    flash("Your post has been deleted!.", category="success")
+
+    return redirect(url_for("blog.index"))
 
 
-@bp.route('/<int:id>/like', methods=('POST',))
+@bp.route("/upvote/<int:post_id>", methods=("POST",))
 @login_required
-def upvote_post(post_id):
-    """Increments the upvote counter for a post by 1 if its upvote button is selected.
+def upvote(post_id):
+    """Increments the upvote counter for a post by 1 if its upvote button is
+    selected.
 
-    Only decrements the upvote counter for that post by 1 if its Upvote Button was
-    previously selected AND is deselected."""
-    get_post(post_id)
-    db = get_db()
+    Only decrements the upvote counter for that post by 1 if its upvote button
+    was previously selected AND is deselected.
 
-    db.execute('DELETE FROM post WHERE id = ?;', (post_id,))
-    db.execute('DELETE FROM upvote WHERE post_id = ?;', (post_id,))
-    db.commit()
+    :param post_id: The Post ID.
+    :return: A JSON object containing the number of upvotes the post has and
+             whether the post has been upvoted by the user."""
 
-    return redirect(url_for('blog.index'))
+    # Queries the database for the post by post_id
+    post = Post.query.filter_by(id=id).first()
+
+    # Queries the database for the upvote by upvoter_id and upvoted_post_id
+    upvote = Upvote.query.filter_by(
+        upvoter_id=current_user.id, upvoted_post_id=post_id
+    ).first()
+
+    if upvote:
+        # Decrements the upvote counter for the post by 1
+        db.session.delete(upvote)
+        db.session.commit()
+    else:
+        # Increments the upvote counter for the post by 1
+        upvote = Upvote(upvoter_id=current_user.id, upvoted_post_id=post_id)
+        db.session.add(upvote)
+        db.session.commit()
+
+    return jsonify(
+        {
+            "upvotes": len(post.upvotes),
+            "upvoted": current_user.id
+            in map(lambda upvoter: upvoter.upvoter_id, post.upvotes),
+        }
+    )
