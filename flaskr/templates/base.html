@@ -10,7 +10,7 @@
               content="This is a heavily-modified official Flask tutorial with upvoting functionality." />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        {# Allows children templates to add CSS files to the head block #}
+        {#  Allows children templates to add CSS files to the head block  #}
         {% block css_section %}
             <link href="{{ url_for('static', filename='css/index.css') }}"
                   rel="stylesheet"
@@ -18,6 +18,7 @@
         {% endblock css_section %}
     </head>
     <body>
+        {#  Navigation Bar Section  #}
         <nav>
             <h1>Flaskr</h1>
             <ul>
@@ -38,6 +39,7 @@
                 {% endif %}
             </ul>
         </nav>
+        {#  Main Content Section  #}
         <section class="content">
             <header>
                 {% block header %}
@@ -49,7 +51,7 @@
             {% block content %}
             {% endblock content %}
         </section>
-        {# Allows children templates to add JS files to the end of the body block #}
+        {#  Allows children templates to add JS files to the end of the body block  #}
         {% block js_section %}
             <script type="text/javascript"
                     src="{{ url_for('static', filename='js/index.js') }}"></script>
