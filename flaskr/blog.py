@@ -148,28 +148,32 @@ def upvote(post_id):
     :return: A JSON object containing the number of upvotes the post has and
              whether the post has been upvoted by the user."""
 
-    # Queries the database for the post by post_id
-    post = Post.query.filter_by(id=post_id).first()
+    # Queries the database for the given post by post_id
+    given_post = Post.query.filter_by(id=post_id).first()
 
-    # Queries the database for the upvote by upvoter_id and upvoted_post_id
-    upvote = Upvote.query.filter_by(
+    # Queries the database for the given upvote by upvoter_id and
+    # upvoted_post_id
+    given_upvote = Upvote.query.filter_by(
         upvoter_id=current_user.id, upvoted_post_id=post_id
     ).first()
 
-    if upvote:
+    if given_upvote:
         # Decrements the upvote counter for the post by 1
-        db.session.delete(upvote)
+        db.session.delete(given_upvote)
         db.session.commit()
     else:
         # Increments the upvote counter for the post by 1
-        upvote = Upvote(upvoter_id=current_user.id, upvoted_post_id=post_id)
-        db.session.add(upvote)
+        new_upvote = Upvote(
+            upvoter_id=current_user.id,
+            upvoted_post_id=post_id
+        )
+        db.session.add(new_upvote)
         db.session.commit()
 
     return jsonify(
         {
-            "upvotes": len(post.upvotes),
-            "upvoted": current_user.id
-            in map(lambda upvoter: upvoter.upvoter_id, post.upvotes),
+            "upvoteCount": len(given_post.upvotes),
+            "isUpvotedByCurrentUser": current_user.id
+            in map(lambda upvoter: upvoter.upvoter_id, given_post.upvotes),
         }
     )
