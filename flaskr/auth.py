@@ -15,8 +15,9 @@ bp = Blueprint("auth", __name__)
 def register():
     """Registers the user if a valid username and password are inputted.
 
-    :return: The rendered HTML of the Login Template if all inputs are valid;
-             otherwise, the rendered HTML of the Register Template is returned.
+    :return: The rendered HTML of the signed-in version of the Index Template
+             if all inputs are valid; otherwise, the rendered HTML of the
+             Register Template is returned.
     """
 
     if request.method == "POST":
@@ -36,8 +37,8 @@ def register():
         elif username_exists:
             error = "This username already exists."
 
-        # Registers the new user and redirects him/her to the Login Template if
-        # error is None
+        # Registers the new user and redirects him/her to the signed-in version
+        # of the Index Template if error is None
         if error is None:
             new_user = User(
                 username=username,
@@ -48,7 +49,7 @@ def register():
             login_user(new_user, remember=True)
             flash("You have been registered!", category="success")
 
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("blog.index"))
 
         # Flashes an error message if error is not None
         flash(error, category="error")
@@ -73,14 +74,17 @@ def login():
         # Queries the database for the user by the inputted username
         user = User.query.filter_by(username=username).first()
 
-        # Initializes the error-checking variables
+        # Initializes the error-checking variable
         error = None
-        wrong_password = not check_password_hash(user.password, password)
 
         # Assigns the appropriate message to error (if needed)
-        if user is None:
+        if not username:
+            error = "Username is required."
+        elif not password:
+            error = "Password is required."
+        elif user is None:
             error = "This username does not exist."
-        elif wrong_password:
+        elif not check_password_hash(user.password, password):
             error = "This password is incorrect."
 
         # Log ins the user if the correct username and password are inputted
